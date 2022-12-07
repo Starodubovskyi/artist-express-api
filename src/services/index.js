@@ -1,0 +1,10 @@
+module.exports.authService = require('./auth.service');
+module.exports.emailService = require('./email.service');
+module.exports.tokenService = require('./token.service');
+module.exports.userService = require('./user.service');
+module.exports.pagesService = require('./pages.service');
+module.exports.menuService = require('./menu.service');
+module.exports.contactService = require('./contact-form.service');
+module.exports.themeSettingService = require('./themeSetting.service');
+module.exports.imagesService = require('./images.service');
+module.exports.customBlocks = require('./customBlocks.service');
