@@ -1,3 +1,4 @@
+const path = require('path');
 const { Images } = require('../models');
 const catchAsync = require('../utils/catchAsync');
 
@@ -19,7 +20,7 @@ const uploadImageDb = catchAsync(async (req, res) => {
  * get by name  image
  */
 const getByNameImage = catchAsync(async (req, res) => {
-  res.sendFile(`${req.params.name}`, { root: '/src/images/' });
+  res.sendFile(`${req.params.name}`, path.join(`${__dirname}/src/images`));
 });
 
 module.exports = {
