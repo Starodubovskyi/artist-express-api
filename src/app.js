@@ -23,7 +23,7 @@ if (config.env !== 'test') {
 }
 
 // app.use(express.static(`${__dirname}/images/`));
-app.use('src/', express.static(path.join(__dirname, 'images')));
+// app.use('src/', express.static(path.join(__dirname, 'images')));
 // set security HTTP headers
 app.use(helmet());
 
@@ -52,7 +52,7 @@ passport.use('jwt', jwtStrategy);
 if (config.env === 'production') {
   app.use('/v1/auth', authLimiter);
   console.log('log', __dirname);
-  app.use(express.static(`${__dirname}/images/`));
+  // app.use(express.static(`${__dirname}/images/`));
   // app.use('/images/', express.static(path.join(__dirname, 'images')));
 }
 
