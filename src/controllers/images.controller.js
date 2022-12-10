@@ -19,7 +19,7 @@ const uploadImageDb = catchAsync(async (req, res) => {
  * get by name  image
  */
 const getByNameImage = catchAsync(async (req, res) => {
-  res.sendFile(`${req.params.name}`, { root: '/images/' });
+  res.sendFile(`${req.params.name}`, { root: 'src/images/' });
 });
 
 module.exports = {
