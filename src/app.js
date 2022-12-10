@@ -21,8 +21,8 @@ if (config.env !== 'test') {
   app.use(morgan.successHandler);
   app.use(morgan.errorHandler);
 }
-// app.use(express.static(`${__dirname}/images/`));
-app.use('/images/', express.static(path.join(__dirname, 'images')));
+app.use(express.static(`${__dirname}/images/`));
+// app.use('/images/', express.static(path.join(__dirname, 'images')));
 
 // set security HTTP headers
 app.use(helmet());
