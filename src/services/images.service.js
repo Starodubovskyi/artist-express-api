@@ -1,38 +1,44 @@
 const multer = require('multer');
 const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'CloudinaryDemo',
+    allowedFormats: ['jpeg', 'png', 'jpg'],
+  },
+});
 // Setting storage engine
 const storageEngine = multer.diskStorage({
-  destination: 'src/images',
+  storage: multer.diskStorage({}),
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}--${file.originalname}`);
   },
 });
-
-const checkFileType = function (file, cb) {
-  // Allowed file extensions
-  const fileTypes = /jpeg|jpg|png|gif|svg/;
-
-  // check extension names
-  const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
-
-  const mimeType = fileTypes.test(file.mimetype);
-
-  if (mimeType && extName) {
-    return cb(null, true);
-  }
-  cb('Error: You can Only Upload Images!!');
-};
 
 // initializing multer
 const upload = multer({
   storage: storageEngine,
   limits: { fileSize: 10000000 },
   fileFilter: (req, file, cb) => {
-    checkFileType(file, cb);
+    const ext = path.extname(file.originalname);
+    if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
+      cb(new Error('Unsupported file type!'), false);
+      return;
+    }
+    cb(null, true);
   },
 });
 
 module.exports = {
   upload,
+  storage,
 };
