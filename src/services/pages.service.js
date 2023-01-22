@@ -74,7 +74,7 @@ const getPagesTags = async () => {
   });
 
   return itemPages.reduce((result, currentTag) => {
-    return [...result, ...currentTag];
+    return [...new Set(result), ...currentTag];
   }, []);
 };
 

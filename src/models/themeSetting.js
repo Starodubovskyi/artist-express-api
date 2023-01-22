@@ -8,6 +8,7 @@ const themeSettingSchema = mongoose.Schema({
   mainMenu: [],
   footerMenu: [],
   siteName: { type: String },
+  siteLogo: {},
 });
 
 /**
