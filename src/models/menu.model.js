@@ -4,6 +4,8 @@ const menuSchema = mongoose.Schema(
   {
     slug: { type: String, default: '' },
     label: { type: String, default: '' },
+    keywords: { type: String },
+    description: { type: String },
     pages: [],
     order: { type: Number },
   },
