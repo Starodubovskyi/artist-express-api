@@ -1,4 +1,5 @@
 const express = require('express');
+const biographyRoute = require('./biografy.route');
 const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
@@ -8,6 +9,8 @@ const contactRoute = require('./contact-form.route');
 const themeSettings = require('./themeSettings.route');
 const imagesRoute = require('./images.route');
 const customBlocks = require('./customBlock.route');
+const opereRoute = require('./opere.route');
+const expositionRoute = require('./exposiotion.route');
 
 const config = require('../../config/config');
 
@@ -45,6 +48,18 @@ const defaultRoutes = [
   {
     path: '/custom-blocks',
     route: customBlocks,
+  },
+  {
+    path: '/biography',
+    route: biographyRoute,
+  },
+  {
+    path: '/opera',
+    route: opereRoute,
+  },
+  {
+    path: '/exposition',
+    route: expositionRoute,
   },
 ];
 

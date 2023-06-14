@@ -6,3 +6,6 @@ module.exports.contactController = require('./contact-form.controller');
 module.exports.themeController = require('./themeSettings.controller');
 module.exports.imagesController = require('./images.controller');
 module.exports.customBlockController = require('./customBlocks.controller');
+module.exports.getArtistController = require('./biografy.contoller');
+module.exports.getArtworkListController = require('./opere.controller');
+module.exports.getExpositionController = require('./exposition.controller');

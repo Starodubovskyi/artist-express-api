@@ -8,3 +8,7 @@ module.exports.contactService = require('./contact-form.service');
 module.exports.themeSettingService = require('./themeSetting.service');
 module.exports.imagesService = require('./images.service');
 module.exports.customBlocks = require('./customBlocks.service');
+module.exports.getArtistDataServise = require('./biografy.service');
+module.exports.getArtworkListService = require('./opere.services');
+module.exports.getArtworkEveryImageService = require('./opere.services');
+module.exports.getExpositionService = require('./exposition.service');
