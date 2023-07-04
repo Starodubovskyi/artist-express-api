@@ -7,7 +7,8 @@ const getArtworkList = catchAsync(async (req, res) => {
 });
 
 const getArtworkEveryImage = catchAsync(async (req, res) => {
-  const artworkList = await getArtworkListService.getArtworkEveryImageData();
+  const artwork_id = req.params.id;
+  const artworkList = await getArtworkListService.getArtworkEveryImageData(artwork_id);
   res.json(artworkList);
 });
 module.exports = {

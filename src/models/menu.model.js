@@ -8,6 +8,10 @@ const menuSchema = mongoose.Schema(
     description: { type: String },
     pages: [],
     order: { type: Number },
+    image: { type: String },
+    isSystem: { type: Boolean },
+    public: { type: Boolean },
+    mtaCode: { type: String },
   },
   { versionKey: false },
   { collection: 'menus' }

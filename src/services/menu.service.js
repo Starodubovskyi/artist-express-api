@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 const { log } = require('winston');
+const axios = require('axios');
 const { Menu, Pages } = require('../models');
 const ApiError = require('../utils/ApiError');
 const SearchOptions = require('../middlewares/pagination');
@@ -72,24 +73,45 @@ const deleteMenuById = async (menuId) => {
  * @returns {Promise<Menu>}
  */
 const getMenuItemBySlug = async (res, req) => {
-  const menuItem = await Menu.findOne({ slug: req.query.slug });
+  const menuItem = await Menu.findOne({ slug: req.query.slug, public: true });
 
   if (!menuItem) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Slug not found');
   }
-  const itemPages = menuItem.pages.map((page) => new ObjectId(page));
 
-  const pages = await Pages.find({
-    _id: {
-      $in: itemPages,
-    },
-  });
+  if (menuItem.isSystem) {
+    const itemPages = menuItem.pages.map((page) => new ObjectId(page));
 
-  const blocks = pages.reduce((result, currentPage) => {
-    return [...result, ...currentPage.blocks];
-  }, []);
+    const pages = await Pages.find({
+      _id: {
+        $in: itemPages,
+      },
+    });
 
-  return { blocks };
+    const blocks = pages.reduce((result, currentPage) => {
+      return [...result, ...currentPage.blocks];
+    }, []);
+
+    return { blocks };
+  }
+
+  const response = await axios.get(
+    `https://mtalegacy.alloy.it/legacy/rest-api/v1/artwork/list/${process.env.ACCOUNT_ID}/${menuItem.mtaCode}`
+  );
+
+  return response.data;
+};
+
+/**
+ * Get menu by isSystem
+ * @param {Response} res
+ * @param {Request} req
+ * @returns {Promise<Menu>}
+ */
+const getMenuItemByIsSystem = async (res, req) => {
+  const menuItem = await Menu.find({ isSystem: false, public: true });
+
+  return menuItem.map(({ slug, label, image }) => ({ slug, label, image }));
 };
 
 module.exports = {
@@ -99,4 +121,5 @@ module.exports = {
   updateMenuById,
   deleteMenuById,
   getMenuItemBySlug,
+  getMenuItemByIsSystem,
 };

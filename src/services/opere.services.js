@@ -13,15 +13,17 @@ const getArtworkListData = async () => {
   }
 };
 
-const getArtworkEveryImageData = async () => {
+// eslint-disable-next-line camelcase
+const getArtworkEveryImageData = async (artwork_id) => {
   try {
     const response = await axios.get(
-      `https://mtalegacy.alloy.it/legacy/rest-api/v1/artwork/get/${process.env.ACCOUNT_ID}/${process.env.ARTWORK_ID}`
+      // eslint-disable-next-line camelcase
+      `https://mtalegacy.alloy.it/legacy/rest-api/v1/artwork/get/${process.env.ACCOUNT_ID}/${artwork_id}`
     );
     return response.data;
   } catch (error) {
     throw new Error('Failed to fetch artwork list');
-  }ui
+  }
 };
 
 module.exports = {

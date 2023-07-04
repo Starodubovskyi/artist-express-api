@@ -40,6 +40,10 @@ const getMenuItemBySlug = catchAsync(async (req, res) => {
   res.send(menuItem);
 });
 
+const getMenuItemByIsSystem = catchAsync(async (req, res) => {
+  const menuItem = await menuService.getMenuItemByIsSystem(res, req);
+  res.send(menuItem);
+});
 module.exports = {
   createMenu,
   getMenu,
@@ -47,4 +51,5 @@ module.exports = {
   updateMenu,
   deleteMenu,
   getMenuItemBySlug,
+  getMenuItemByIsSystem,
 };

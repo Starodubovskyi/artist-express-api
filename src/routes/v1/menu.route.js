@@ -13,4 +13,6 @@ router.delete('/manage-menu/:menuId', menuController.deleteMenu);
 // public
 router.get('/public/menu-item/', menuController.getMenuItemBySlug);
 
+// menuItem = isSystem === false
+router.get('/public/menu-item/is-system', menuController.getMenuItemByIsSystem);
 module.exports = router;
