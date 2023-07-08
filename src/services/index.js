@@ -12,3 +12,5 @@ module.exports.getArtistDataServise = require('./biografy.service');
 module.exports.getArtworkListService = require('./opere.services');
 module.exports.getArtworkEveryImageService = require('./opere.services');
 module.exports.getExpositionService = require('./exposition.service');
+module.exports.getAnthologiesService = require('./anthologies.service');
+module.exports.getCatalogService = require('./catalog.service');

@@ -9,3 +9,5 @@ module.exports.customBlockController = require('./customBlocks.controller');
 module.exports.getArtistController = require('./biografy.contoller');
 module.exports.getArtworkListController = require('./opere.controller');
 module.exports.getExpositionController = require('./exposition.controller');
+module.exports.getAnthologyController = require('./anthologies.controller');
+module.exports.getCatalogController = require('./catalog.controller');

@@ -11,6 +11,8 @@ const imagesRoute = require('./images.route');
 const customBlocks = require('./customBlock.route');
 const opereRoute = require('./opere.route');
 const expositionRoute = require('./exposiotion.route');
+const antologyRoute = require('./antologies.route');
+const catalogRoute = require('./catalog.route');
 
 const config = require('../../config/config');
 
@@ -60,6 +62,14 @@ const defaultRoutes = [
   {
     path: '/exposition',
     route: expositionRoute,
+  },
+  {
+    path: '/anthology',
+    route: antologyRoute,
+  },
+  {
+    path: '/catalog',
+    route: catalogRoute,
   },
 ];
 
