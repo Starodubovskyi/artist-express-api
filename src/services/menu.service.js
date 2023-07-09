@@ -1,11 +1,12 @@
 const httpStatus = require('http-status');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
-const { log } = require('winston');
 const axios = require('axios');
 const { Menu, Pages } = require('../models');
 const ApiError = require('../utils/ApiError');
 const SearchOptions = require('../middlewares/pagination');
+const { getThemeSettings, updateTheme } = require('./themeSetting.service');
 
 /**
  * Create a menu
@@ -13,7 +14,41 @@ const SearchOptions = require('../middlewares/pagination');
  * @returns {Promise<Menu>>}
  */
 const createMenu = async (menuBody) => {
-  return Menu.create(menuBody);
+  // TODO: add validation...
+  const menu = await Menu.create(menuBody);
+
+  const theme = await getThemeSettings();
+
+  const mainMenu = [...theme.mainMenu];
+
+  await updateTheme({
+    ...theme,
+    mainMenu: mainMenu.reduce((acc, currentRootItem) => {
+      // TODO: move Operas to ENV as MENU_ROOT_ITEM
+      if (!currentRootItem.id || currentRootItem.id !== 'Operas') {
+        return [...acc, currentRootItem];
+      }
+
+      return [
+        ...acc,
+        {
+          ...currentRootItem,
+          children: [
+            ...currentRootItem.children,
+            {
+              children: [],
+              parentId: null,
+              id: menu._id.toString(),
+              label: menu.label,
+              slug: menu.slug,
+            },
+          ],
+        },
+      ];
+    }, []),
+  });
+
+  return menu;
 };
 
 /**
@@ -48,6 +83,39 @@ const updateMenuById = async (id, updateBody) => {
 
   Object.assign(menu, updateBody);
   await menu.save();
+
+  const theme = await getThemeSettings();
+
+  const mainMenu = [...theme.mainMenu];
+
+  await updateTheme({
+    ...theme,
+    mainMenu: mainMenu.reduce((acc, currentRootItem) => {
+      // TODO: move Operas to ENV as MENU_ROOT_ITEM
+      if (!currentRootItem.id || currentRootItem.id !== 'Operas') {
+        return [...acc, currentRootItem];
+      }
+
+      return [
+        ...acc,
+        {
+          ...currentRootItem,
+          children: currentRootItem.children.map((child) => {
+            if (child.id.toString() !== menu._id.toString()) {
+              return child;
+            }
+
+            return {
+              ...child,
+              slug: menu.slug,
+              label: menu.label,
+            };
+          }),
+        },
+      ];
+    }, []),
+  });
+
   return menu;
 };
 
@@ -62,7 +130,30 @@ const deleteMenuById = async (menuId) => {
   if (!menu) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Menu not found');
   }
-  await menu.deleteOne({ _id: id });
+  await menu.deleteOne({ _id: id, isSystem: false });
+
+  const theme = await getThemeSettings();
+
+  const mainMenu = [...theme.mainMenu];
+
+  await updateTheme({
+    ...theme,
+    mainMenu: mainMenu.reduce((acc, currentRootItem) => {
+      // TODO: move Operas to ENV as MENU_ROOT_ITEM
+      if (!currentRootItem.id || currentRootItem.id !== 'Operas') {
+        return [...acc, currentRootItem];
+      }
+
+      return [
+        ...acc,
+        {
+          ...currentRootItem,
+          children: currentRootItem.children.filter((child) => child.id.toString() !== menu._id.toString()),
+        },
+      ];
+    }, []),
+  });
+
   return menu;
 };
 
@@ -104,11 +195,9 @@ const getMenuItemBySlug = async (res, req) => {
 
 /**
  * Get menu by isSystem
- * @param {Response} res
- * @param {Request} req
  * @returns {Promise<Menu>}
  */
-const getMenuItemByIsSystem = async (res, req) => {
+const getMenuItemByIsSystem = async () => {
   const menuItem = await Menu.find({ isSystem: false, public: true });
 
   return menuItem.map(({ slug, label, image }) => ({ slug, label, image }));

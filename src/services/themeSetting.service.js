@@ -1,14 +1,13 @@
 const httpStatus = require('http-status');
 const ApiError = require('../utils/ApiError');
-const SearchOptions = require('../middlewares/pagination');
 const { ThemeSetting } = require('../models');
 
 /**
  * Get First Theme
  * @returns {Promise<Theme>}
  */
-const getThemeSettings = async (req) => {
-  return ThemeSetting.findOne({}, null, new SearchOptions(req.query));
+const getThemeSettings = async () => {
+  return ThemeSetting.findOne();
 };
 
 /**
