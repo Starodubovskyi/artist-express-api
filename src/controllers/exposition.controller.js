@@ -6,6 +6,14 @@ const getExposition = catchAsync(async (req, res) => {
   res.json(expositionData);
 });
 
+const getExpositionItem = catchAsync(async (req, res) => {
+  const expositionId = req.params.id;
+
+  const expositionData = await getExpositionService.getExpositionItem(expositionId);
+  res.json(expositionData);
+});
+
 module.exports = {
   getExposition,
+  getExpositionItem,
 };
