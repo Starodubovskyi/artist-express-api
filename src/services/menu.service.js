@@ -15,7 +15,7 @@ const { getThemeSettings, updateTheme } = require('./themeSetting.service');
  */
 const createMenu = async (menuBody) => {
   // TODO: add validation...
-  const menu = await Menu.create(menuBody);
+  const menu = await Menu.create({ ...menuBody, isSystem: false });
 
   const theme = await getThemeSettings();
 
@@ -24,8 +24,7 @@ const createMenu = async (menuBody) => {
   await updateTheme({
     ...theme,
     mainMenu: mainMenu.reduce((acc, currentRootItem) => {
-      // TODO: move Operas to ENV as MENU_ROOT_ITEM
-      if (!currentRootItem.id || currentRootItem.id !== 'Operas') {
+      if (!currentRootItem.id || currentRootItem.id.toString() !== process.env.OPERA_ROOT_ELEMENT) {
         return [...acc, currentRootItem];
       }
 
@@ -41,6 +40,7 @@ const createMenu = async (menuBody) => {
               id: menu._id.toString(),
               label: menu.label,
               slug: menu.slug,
+              visible: menu.public,
             },
           ],
         },
@@ -88,12 +88,13 @@ const updateMenuById = async (id, updateBody) => {
 
   const mainMenu = [...theme.mainMenu];
 
+  const footerMenu = [...theme.footerMenu];
+
   await updateTheme({
     ...theme,
     mainMenu: mainMenu.reduce((acc, currentRootItem) => {
-      // TODO: move Operas to ENV as MENU_ROOT_ITEM
-      if (!currentRootItem.id || currentRootItem.id !== 'Operas') {
-        return [...acc, currentRootItem];
+      if (currentRootItem.id.toString() === menu._id.toString()) {
+        return [...acc, { ...currentRootItem, slug: menu.slug, label: menu.label, visible: menu.public }];
       }
 
       return [
@@ -109,6 +110,31 @@ const updateMenuById = async (id, updateBody) => {
               ...child,
               slug: menu.slug,
               label: menu.label,
+              visible: menu.public,
+            };
+          }),
+        },
+      ];
+    }, []),
+    footerMenu: footerMenu.reduce((acc, currentRootItem) => {
+      if (currentRootItem.id.toString() === menu._id.toString()) {
+        return [...acc, { ...currentRootItem, slug: menu.slug, label: menu.label, visible: menu.public }];
+      }
+
+      return [
+        ...acc,
+        {
+          ...currentRootItem,
+          children: currentRootItem.children.map((child) => {
+            if (child.id.toString() !== menu._id.toString()) {
+              return child;
+            }
+
+            return {
+              ...child,
+              slug: menu.slug,
+              label: menu.label,
+              visible: menu.public,
             };
           }),
         },
@@ -139,8 +165,7 @@ const deleteMenuById = async (menuId) => {
   await updateTheme({
     ...theme,
     mainMenu: mainMenu.reduce((acc, currentRootItem) => {
-      // TODO: move Operas to ENV as MENU_ROOT_ITEM
-      if (!currentRootItem.id || currentRootItem.id !== 'Operas') {
+      if (!currentRootItem.id || currentRootItem.id.toString() !== process.env.OPERA_ROOT_ELEMENT) {
         return [...acc, currentRootItem];
       }
 
